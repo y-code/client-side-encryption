@@ -1,0 +1,8 @@
+bin
+obj
+*.key
+*.crt
+*.csr
+*.pem
+*.pfx
+
