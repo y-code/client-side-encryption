@@ -20,7 +20,7 @@ public class WeatherForecastController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
+    [HttpGet()]
     public IEnumerable<WeatherForecast> Get()
     {
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -30,5 +30,22 @@ public class WeatherForecastController : ControllerBase
             Summary = Summaries[Random.Shared.Next(Summaries.Length)]
         })
         .ToArray();
+    }
+
+    [HttpGet("EncryptionKey")]
+    public string GetEncryptionKey()
+    {
+        var rsa = RSA.Create();
+        var pem = rsa.ExportRSAPublicKeyPem();
+        var bytes = Encoding.UTF8.GetBytes(pem);
+        return pem;
+    }
+
+    [HttpGet("EncryptionKeyFile")]
+    public FileContentResult GetEncryptionKeyFile()
+    {
+        var pem = GetEncryptionKey();
+        var bytes = Encoding.UTF8.GetBytes(pem);
+        return File(bytes, "application/x-pem-file", fileDownloadName: "client-side-encryption-key.pem");
     }
 }
